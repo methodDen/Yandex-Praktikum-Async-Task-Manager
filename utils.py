@@ -1,5 +1,7 @@
 import logging
 import sys
+import time
+from typing import Callable
 
 # Constants
 FILE_NAME_FOR_TASK = 'task_file.txt'
@@ -20,10 +22,14 @@ def sleep_random_time():
     time.sleep(random.uniform(1, 5))
 
 
-def timing_decorator(func):
+def timing_decorator(func: Callable):
 
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        func(*args, **kwargs)
-        end = time.time()
+    def wrapper(self, *args, **kwargs):
+
+        if not self.max_running_time:
+            return func(self, *args, **kwargs)
+
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
         print(f'Время выполнения функции {func.__name__}: {end - start}')
