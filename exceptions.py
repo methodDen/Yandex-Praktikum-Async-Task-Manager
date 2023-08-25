@@ -1,0 +1,2 @@
+class TaskTimeLimitExceededException(Exception):
+    pass
