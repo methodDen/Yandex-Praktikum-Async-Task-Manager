@@ -10,10 +10,9 @@ logger = get_logger()
 
 
 class Scheduler:
-    def __init__(self, pool_size: int = 10, file: str = 'jobs_storage.pkl',):
+    def __init__(self, pool_size: int = 10):
         self.pool_size = pool_size
         self.queue: deque[Job] = deque(maxlen=pool_size)
-        self.storage_file: str = file
         self.dependency_mapping = defaultdict(list)
         self.dependency_status_mapping = dict()
 
