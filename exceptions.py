@@ -1,5 +1,6 @@
-class TaskTimeLimitExceededException(Exception):
+class QueueLengthExceededException(Exception):
     pass
 
-class QueueLengthExceededException(Exception):
+
+class JobExecutionFailedException(Exception):
     pass

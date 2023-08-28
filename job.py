@@ -1,16 +1,10 @@
-from enum import Enum
+from uuid import uuid4
 from typing import List, Callable, Optional
 
-from uuid import uuid4, UUID
+from logger import get_logger
+from utils import timing_decorator, JobStatus
 
-
-class JobStatus(Enum):
-    NOT_STARTED = 'NOT STARTED'
-    STARTED = 'STARTED'
-    PAUSED = 'PAUSED'
-    POSTPONED = 'POSTPONED'
-    FAILED = 'FAILED'
-    FINISHED_SUCCESSFULLY = 'FINISHED_SUCCESSFULLY'
+logger = get_logger()
 
 
 class Job:
@@ -21,7 +15,6 @@ class Job:
             args: Optional[tuple] = None,
             kwargs: Optional[dict] = None,
             start_at: Optional[str] = None,
-            working_time: int = 0,
             max_working_time: Optional[int] = None,
             tries: int = 0,
             max_tries: int = 0,
@@ -32,7 +25,6 @@ class Job:
         self.args = args or tuple()
         self.kwargs = kwargs or dict()
         self.start_at = start_at
-        self.working_time = working_time
         self.max_working_time = max_working_time
         self.tries = tries
         self.max_tries = max_tries
@@ -40,12 +32,7 @@ class Job:
         self.status = status
         self.fn = fn(*self.args, **self.kwargs)
 
+    @timing_decorator
     def run(self):
         self.status = JobStatus.STARTED
         self.fn.send(None)
-
-    def pause(self):
-        self.status = JobStatus.PAUSED
-
-    def stop(self):
-        self.status = JobStatus.FINISHED_SUCCESSFULLY
