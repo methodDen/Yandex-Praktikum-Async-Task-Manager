@@ -1,6 +1,6 @@
 import os
 import requests
-from utils import sleep_random_time, FILE_NAME_FOR_TASK, get_logger
+from utils import sleep_random_time, FILE_NAME_FOR_JOB, get_logger
 
 logger = get_logger()
 
@@ -11,15 +11,15 @@ logger = get_logger()
 
 def create_file_task() -> None:
     sleep_random_time()
-    with open(FILE_NAME_FOR_TASK, 'w') as file:
+    with open(FILE_NAME_FOR_JOB, 'w') as file:
         file.write('Random first line\n')
-    logger.info(f"File %s successfully created and data written", FILE_NAME_FOR_TASK)
+    logger.info(f"File %s successfully created and data written", FILE_NAME_FOR_JOB)
     yield
 
 
 def write_to_file_task() -> None:
     sleep_random_time()
-    with open(FILE_NAME_FOR_TASK, 'a') as f:
+    with open(FILE_NAME_FOR_JOB, 'a') as f:
         f.writelines([f'Random text {i + 1}\n' for i in range(10)])
     logger.info('Writing to file finished')
     yield
@@ -27,7 +27,7 @@ def write_to_file_task() -> None:
 
 def read_from_file_task() -> None:
     sleep_random_time()
-    with open(FILE_NAME_FOR_TASK, 'r') as f:
+    with open(FILE_NAME_FOR_JOB, 'r') as f:
         for i, line in enumerate(f.readlines()):
             logger.info(f'Line # %d: %s', i + 1, line.strip('\n'))
             yield
@@ -36,12 +36,12 @@ def read_from_file_task() -> None:
 
 def delete_file_task() -> None:
     sleep_random_time()
-    if os.path.exists(FILE_NAME_FOR_TASK):
-        os.unlink(FILE_NAME_FOR_TASK)
-        logger.info(f"File %s successfully deleted", FILE_NAME_FOR_TASK)
+    if os.path.exists(FILE_NAME_FOR_JOB):
+        os.unlink(FILE_NAME_FOR_JOB)
+        logger.info(f"File %s successfully deleted", FILE_NAME_FOR_JOB)
         yield
     else:
-        logger.info(f"File %s doesn't exist", FILE_NAME_FOR_TASK)
+        logger.info(f"File %s doesn't exist", FILE_NAME_FOR_JOB)
 
 
 def create_dirs_task() -> None:

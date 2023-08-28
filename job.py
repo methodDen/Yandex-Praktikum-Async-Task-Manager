@@ -26,7 +26,6 @@ class Job:
             tries: int = 0,
             max_tries: int = 0,
             dependencies: List[str] = None,
-            dependencies_statuses: Optional[dict[UUID, JobStatus]] = None,
             status: JobStatus = JobStatus.NOT_STARTED,
     ) -> None:
         self.id_ = id_ or str(uuid4())
@@ -38,10 +37,6 @@ class Job:
         self.tries = tries
         self.max_tries = max_tries
         self.dependencies = dependencies or list()
-        self.dependencies_statuses = (
-                dependencies_statuses or
-                {dep: JobStatus.NOT_STARTED for dep in self.dependencies}
-        )
         self.status = status
         self.fn = fn(*self.args, **self.kwargs)
 

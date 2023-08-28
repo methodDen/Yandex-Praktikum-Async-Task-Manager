@@ -4,7 +4,7 @@ import time
 from typing import Callable
 
 # Constants
-FILE_NAME_FOR_TASK = 'task_file.txt'
+FILE_NAME_FOR_JOB = 'task_file.txt'
 
 
 def get_logger() -> logging.Logger:
