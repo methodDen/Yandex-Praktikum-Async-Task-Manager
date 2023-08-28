@@ -1,20 +1,18 @@
+import pickle
 from collections import deque
 from typing import List
 
-from job import Job
+from job import Job, JobStatus
 from utils import get_logger
 
 logger = get_logger()
 
 
 class Scheduler:
-    def __init__(self, pool_size: int = 10, file: str = 'jobs.pkl',):
+    def __init__(self, pool_size: int = 10, file: str = 'jobs_storage.pkl',):
         self.pool_size = pool_size
-        self.executable_queue: deque[Job] = deque(maxlen=pool_size)
-        self.global_queue: deque[Job] = deque()
+        self.queue: deque[Job] = deque(maxlen=pool_size)
         self.storage_file: str = file
-        self.dependent_jobs_mapping_dict = {}
-        self.dependent_jobs_status_dict = {}
 
     def schedule(self, job_list: List[Job]):
         for job in job_list:
@@ -25,9 +23,20 @@ class Scheduler:
     def run(self):
         pass
 
-    def restart(self):
-        pass
+    def restart(self) -> None:
+        with open(self.storage_file, 'rb') as f:
+            tasks_list = pickle.load(f)
 
-    def stop(self):
-        for task in self.executable_queue:
+        for task in tasks_list:
+            task.status = JobStatus.NOT_STARTED
+            self.schedule(task)
+
+        self.run()
+
+
+    def stop(self) -> None:
+        for task in self.queue:
             task.pause()
+
+        with open(self.storage_file, 'wb') as f:
+            pickle.dump(self.queue, f, pickle.HIGHEST_PROTOCOL)

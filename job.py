@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List, Callable, Optional
 
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 
 class JobStatus(Enum):
@@ -26,6 +26,7 @@ class Job:
             tries: int = 0,
             max_tries: int = 0,
             dependencies: List[str] = None,
+            dependencies_statuses: Optional[dict[UUID, JobStatus]] = None,
             status: JobStatus = JobStatus.NOT_STARTED,
     ) -> None:
         self.id_ = id_ or str(uuid4())
@@ -37,6 +38,10 @@ class Job:
         self.tries = tries
         self.max_tries = max_tries
         self.dependencies = dependencies or list()
+        self.dependencies_statuses = (
+                dependencies_statuses or
+                {dep: JobStatus.NOT_STARTED for dep in self.dependencies}
+        )
         self.status = status
         self.fn = fn(*self.args, **self.kwargs)
 
@@ -48,4 +53,4 @@ class Job:
         self.status = JobStatus.PAUSED
 
     def stop(self):
-        self.status = JobStatus.FINISHED
+        self.status = JobStatus.FINISHED_SUCCESSFULLY
