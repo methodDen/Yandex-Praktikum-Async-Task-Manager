@@ -1,13 +1,9 @@
 import os
 import requests
-from utils import sleep_random_time, FILE_NAME_FOR_JOB_FLOW_1
+from utils import sleep_random_time
 from logger import get_logger
 
 logger = get_logger()
-
-# flow 1 : create_dir_job => create_file_job => write_to_file_job => read_from_file_job
-# flow 2 : create_dir_job => create_file_job => delete_file_job => delete_dir_job
-# flow 3: get_swapi_data, create_file_job (random time + retries)
 
 
 def create_file_job(file_path: str) -> None:

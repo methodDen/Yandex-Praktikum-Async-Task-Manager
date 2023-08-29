@@ -2,7 +2,7 @@ import time
 
 import pytest
 
-from scheduler import Scheduler, Job, JobStatus
+from scheduler import Scheduler, Job
 
 
 @pytest.fixture
@@ -14,7 +14,6 @@ def job():
     return Job(fn=task_1, max_working_time=5, id_="job1")
 
 
-# Test the Scheduler class
 def test_scheduler_creation():
     scheduler = Scheduler()
     assert isinstance(scheduler, Scheduler)

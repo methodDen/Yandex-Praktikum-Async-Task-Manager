@@ -1,6 +1,6 @@
 import time
-from collections import deque, defaultdict
 from datetime import datetime
+from collections import deque, defaultdict
 
 from exceptions import QueueLengthExceededException
 from job import Job, JobStatus
@@ -83,7 +83,6 @@ class Scheduler:
             self.queue.rotate(1)
 
     def is_job_can_start(self, job: Job, job_queue: deque[Job]) -> bool:
-        # check dependencies statuses
         if job.dependencies:
             job_dependencies_ids = self.dependency_mapping[job]
             job_dependencies_statuses = [
