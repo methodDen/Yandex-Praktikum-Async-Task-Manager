@@ -7,6 +7,14 @@ from utils import (FILE_NAME_FOR_JOB_FLOW_1, FILE_NAME_FOR_JOB_FLOW_2, FILE_NAME
 # flow 2 : create_dir_job => create_file_job => delete_file_job => delete_dir_job
 # flow 3: get_swapi_data, create_file_job (random time + retries)
 
+"""
+    От автора проекта: 
+    
+    Реализовал в проекте все, кроме остановки и возобновления задач - не до конца понял, как правильно это сделать.
+    Ввиду того, что время уже истекает, решил сдать все сейчас.
+
+"""
+
 if __name__ == '__main__':
     # flow 1
     create_dirs_job = Job(fn=tasks.create_dirs_job, max_working_time=5,)
