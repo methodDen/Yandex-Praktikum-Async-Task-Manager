@@ -4,3 +4,7 @@ class QueueLengthExceededException(Exception):
 
 class JobExecutionFailedException(Exception):
     pass
+
+
+class JobExecutionTimeLimitExceededException(Exception):
+    pass

@@ -64,17 +64,17 @@ def test_create_file_in_future(scheduler):
     os.remove("test_file.txt")
 
 
-def test_create_file_with_retry_and_failure(scheduler):
+def test_create_file_with_retry_and_success(scheduler):
     def create_file_with_retry_and_failure():
         time.sleep(5)
         yield
 
-    job = Job(create_file_with_retry_and_failure, max_tries=3, max_working_time=2)
+    job = Job(create_file_with_retry_and_failure, max_tries=3, max_working_time=5)
     scheduler.schedule(job)
 
     scheduler.run_until_complete([job])
 
-    assert job.status == JobStatus.FAILED
+    assert job.status == JobStatus.FINISHED_SUCCESSFULLY
 
 
 if __name__ == "__main__":

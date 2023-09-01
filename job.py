@@ -36,3 +36,7 @@ class Job:
     def run(self):
         self.status = JobStatus.STARTED
         self.fn.send(None)
+
+    def stop(self):
+        self.status = JobStatus.PAUSED
+        self.fn.close()

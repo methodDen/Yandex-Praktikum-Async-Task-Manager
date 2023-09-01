@@ -1,3 +1,4 @@
+import pickle
 import time
 from datetime import datetime
 from collections import deque, defaultdict
@@ -5,6 +6,10 @@ from collections import deque, defaultdict
 from exceptions import QueueLengthExceededException
 from job import Job, JobStatus
 from logger import get_logger
+from utils import (
+    JOB_PICKLE_FILE_NAME,
+    function_name_to_function_mapping,
+)
 
 logger = get_logger()
 
@@ -50,6 +55,52 @@ class Scheduler:
                 logger.info(f'Job %s has dependency %s' % (job.id_, dependency))
                 self.dependency_mapping[job].append(dependency)
                 self.dependency_status_mapping[dependency] = JobStatus.NOT_STARTED
+
+    def stop(self) -> None:
+        queue_dump = deque()
+        for job in self.queue:
+            job.stop()
+            queue_dump.appendleft({
+                'id_': job.id_,
+                'status': job.status,
+                'tries': job.tries,
+                'max_tries': job.max_tries,
+                'dependencies': job.dependencies,
+                'start_at': job.start_at,
+                'max_working_time': job.max_working_time,
+                'function_name': job.fn.__name__,
+                'args': job.args,
+                'kwargs': job.kwargs,
+            })
+
+        with open(JOB_PICKLE_FILE_NAME, 'wb') as f:
+            pickle.dump(queue_dump, f)
+
+    def restart(self):
+        with open(JOB_PICKLE_FILE_NAME, 'rb') as f:
+            queue_dump = pickle.load(f)
+
+        for job_dump in queue_dump:
+            job_function = function_name_to_function_mapping[job_dump['function_name']]
+            job = Job(
+                id_=job_dump['id_'],
+                status=JobStatus.NOT_STARTED,
+                tries=job_dump['tries'],
+                max_tries=job_dump['max_tries'],
+                dependencies=None,
+                start_at=job_dump['start_at'],
+                max_working_time=job_dump['max_working_time'],
+                fn=job_function,
+                args=job_dump['args'],
+                kwargs=job_dump['kwargs'],
+            )
+            self.schedule(job)
+
+        while True:
+            try:
+                next(self.run())
+            except StopIteration:
+                break
 
     def run(self) -> None:
         while self.queue:

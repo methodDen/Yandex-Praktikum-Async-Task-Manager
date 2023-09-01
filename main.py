@@ -7,13 +7,6 @@ from utils import (FILE_NAME_FOR_JOB_FLOW_1, FILE_NAME_FOR_JOB_FLOW_2, FILE_NAME
 # flow 2 : create_dir_job => create_file_job => delete_file_job => delete_dir_job
 # flow 3: get_swapi_data, create_file_job (random time + retries)
 
-"""
-    От автора проекта: 
-    
-    Реализовал в проекте все, кроме остановки и возобновления задач - не до конца понял, как правильно это сделать.
-    Ввиду того, что время уже истекает, решил сдать все сейчас.
-
-"""
 
 if __name__ == '__main__':
     # flow 1
@@ -79,20 +72,20 @@ if __name__ == '__main__':
     )
 
     scheduler = Scheduler(pool_size=5)
-    scheduler.run_until_complete(
-        [
-            create_dirs_job,
-            create_file_job_1,
-            write_to_file_job,
-            read_from_file_job,
-            create_file_job_2,
-            delete_file_job,
-            delete_dirs_job,
-            get_swapi_data_job,
-            create_file_job_3,
-        ]
-    )
-
-
-
+    try:
+        scheduler.run_until_complete(
+            [
+                create_dirs_job,
+                create_file_job_1,
+                write_to_file_job,
+                read_from_file_job,
+                create_file_job_2,
+                delete_file_job,
+                delete_dirs_job,
+                get_swapi_data_job,
+                create_file_job_3,
+            ]
+        )
+    except KeyboardInterrupt:
+        scheduler.stop()
 

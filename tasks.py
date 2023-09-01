@@ -1,9 +1,14 @@
 import os
 import requests
-from utils import sleep_random_time
 from logger import get_logger
 
 logger = get_logger()
+
+
+def sleep_random_time():
+    import random
+    import time
+    time.sleep(random.uniform(1, 5))
 
 
 def create_file_job(file_path: str) -> None:
